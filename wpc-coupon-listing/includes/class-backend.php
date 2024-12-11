@@ -14,6 +14,7 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
 		}
 
 		public function __construct() {
+			add_action( 'init', [ $this, 'init' ] );
 			add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 			add_action( 'admin_init', [ $this, 'register_settings' ] );
 			add_action( 'admin_menu', [ $this, 'admin_menu' ] );
@@ -27,6 +28,10 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
 
 			// compatibility
 			add_filter( 'woocommerce_coupon_generator_coupon_meta_data', [ $this, 'set_coupon_public' ], 99, 3 );
+		}
+
+		public function init() {
+			load_plugin_textdomain( 'wpc-coupon-listing', false, basename( WPCCL_DIR ) . '/languages/' );
 		}
 
 		public function enqueue_scripts() {
