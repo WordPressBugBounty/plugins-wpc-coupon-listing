@@ -2,10 +2,9 @@
 Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, coupon listing, coupon
-Requires at least: 4.0
 Tested up to: 6.7
-Version: 1.3.1
-Stable tag: 1.3.1
+Version: 1.3.2
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +60,16 @@ Under **WPClever >> Coupon Listing >> Localization** tab, users can change the w
 
 Users can enable or disable display the list of available coupons right on the mini-cart of the Fly Cart popup in the plugin settings. When Instant Checkout is enabled, customers can even choose the coupons to be applied right from the checkout form without leaving where they are. There’s no need to open the cart page or click on Proceed to checkout in order to choose the coupons and fill them manually. This, thus, improves the checkout process a great deal for buyers’ convenience.
 
+= Not what you needed? =
+
+Please try other plugins from us:
+
+- [WPC Order Tip](https://wordpress.org/plugins/wpc-order-tip/)
+- [WPC Free Gift Coupons](https://wordpress.org/plugins/wpc-free-gift-coupons/)
+- [WPC Free Shipping Bar](https://wordpress.org/plugins/wpc-free-shipping-bar/)
+- [WPC Smart Upsell Funnel](https://wordpress.org/plugins/wpc-smart-upsell-funnel/)
+- [WPC Checkout Restrictions](https://wordpress.org/plugins/wpc-checkout-restrictions/)
+
 == Installation ==
 
 1. Please make sure that you installed WooCommerce
@@ -69,6 +78,10 @@ Users can enable or disable display the list of available coupons right on the m
 4. Now when purchasing, the buyer can choose a coupon from the list
 
 == Changelog ==
+
+= 1.3.2 =
+* Updated: Optimized the code
+* Updated: Compatible with WP 6.7 & Woo 9.7
 
 = 1.3.1 =
 * Updated: Compatible with WP 6.7 & Woo 9.4
