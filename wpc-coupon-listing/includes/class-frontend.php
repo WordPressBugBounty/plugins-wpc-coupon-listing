@@ -142,11 +142,16 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
 				$type       = $coupon->get_discount_type();
 				$individual = $coupon->get_individual_use();
 
-				$amount = match ( $type ) {
-					'percent' => sprintf( Wpccl_Helper::localization( 'discount', /* translators: value */ esc_html__( '%s Discount', 'wpc-coupon-listing' ) ), $coupon->get_amount() . '%' ),
-					'fixed_product' => sprintf( Wpccl_Helper::localization( 'product_discount', /* translators: value */ esc_html__( '%s Product Discount', 'wpc-coupon-listing' ) ), wc_price( $coupon->get_amount() ) ),
-					default => sprintf( Wpccl_Helper::localization( 'discount', /* translators: value */ esc_html__( '%s Discount', 'wpc-coupon-listing' ) ), wc_price( $coupon->get_amount() ) ),
-				};
+				switch ( $type ) {
+					case 'percent';
+						$amount = sprintf( Wpccl_Helper::localization( 'discount', /* translators: value */ esc_html__( '%s Discount', 'wpc-coupon-listing' ) ), $coupon->get_amount() . '%' );
+						break;
+					case 'fixed_product':
+						$amount = sprintf( Wpccl_Helper::localization( 'product_discount', /* translators: value */ esc_html__( '%s Product Discount', 'wpc-coupon-listing' ) ), wc_price( $coupon->get_amount() ) );
+						break;
+					default:
+						$amount = sprintf( Wpccl_Helper::localization( 'discount', /* translators: value */ esc_html__( '%s Discount', 'wpc-coupon-listing' ) ), wc_price( $coupon->get_amount() ) );
+				}
 
 				if ( $coupon->get_free_shipping() ) {
 					$amount = Wpccl_Helper::localization( 'free_shipping', esc_html__( 'Free Shipping', 'wpc-coupon-listing' ) );
