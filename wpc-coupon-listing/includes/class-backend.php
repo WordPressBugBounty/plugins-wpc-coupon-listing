@@ -48,7 +48,7 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
 		}
 
 		function admin_menu() {
-			add_submenu_page( 'wpclever', 'WPC Coupon Listing', 'Coupon Listing', 'manage_options', 'wpclever-wpccl', [
+			add_submenu_page( 'wpclever', esc_html__( 'WPC Coupon Listing', 'wpc-coupon-listing' ), esc_html__( 'Coupon Listing', 'wpc-coupon-listing' ), 'manage_options', 'wpclever-wpccl', [
 				$this,
 				'admin_menu_content'
 			] );
@@ -58,16 +58,26 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
 			$active_tab = sanitize_key( $_GET['tab'] ?? 'settings' );
 			?>
             <div class="wpclever_settings_page wrap">
-                <h1 class="wpclever_settings_page_title"><?php echo 'WPC Coupon Listing ' . WPCCL_VERSION; ?></h1>
-                <div class="wpclever_settings_page_desc about-text">
-                    <p>
-						<?php printf( /* translators: stars */ esc_html__( 'Thank you for using our plugin! If you are satisfied, please reward it a full five-star %s rating.', 'wpc-coupon-listing' ), '<span style="color:#ffb900">&#9733;&#9733;&#9733;&#9733;&#9733;</span>' ); ?>
-                        <br/>
-                        <a href="<?php echo esc_url( WPCCL_REVIEWS ); ?>" target="_blank"><?php esc_html_e( 'Reviews', 'wpc-coupon-listing' ); ?></a> |
-                        <a href="<?php echo esc_url( WPCCL_CHANGELOG ); ?>" target="_blank"><?php esc_html_e( 'Changelog', 'wpc-coupon-listing' ); ?></a> |
-                        <a href="<?php echo esc_url( WPCCL_DISCUSSION ); ?>" target="_blank"><?php esc_html_e( 'Discussion', 'wpc-coupon-listing' ); ?></a>
-                    </p>
+                <div class="wpclever_settings_page_header">
+                    <a class="wpclever_settings_page_header_logo" href="https://wpclever.net/"
+                       target="_blank" title="Visit wpclever.net"></a>
+                    <div class="wpclever_settings_page_header_text">
+                        <div class="wpclever_settings_page_title"><?php echo esc_html__( 'WPC Coupon Listing', 'wpc-coupon-listing' ) . ' ' . WPCCL_VERSION; ?></div>
+                        <div class="wpclever_settings_page_desc about-text">
+                            <p>
+								<?php printf( /* translators: stars */ esc_html__( 'Thank you for using our plugin! If you are satisfied, please reward it a full five-star %s rating.', 'wpc-coupon-listing' ), '<span style="color:#ffb900">&#9733;&#9733;&#9733;&#9733;&#9733;</span>' ); ?>
+                                <br/>
+                                <a href="<?php echo esc_url( WPCCL_REVIEWS ); ?>"
+                                   target="_blank"><?php esc_html_e( 'Reviews', 'wpc-coupon-listing' ); ?></a> |
+                                <a href="<?php echo esc_url( WPCCL_CHANGELOG ); ?>"
+                                   target="_blank"><?php esc_html_e( 'Changelog', 'wpc-coupon-listing' ); ?></a> |
+                                <a href="<?php echo esc_url( WPCCL_DISCUSSION ); ?>"
+                                   target="_blank"><?php esc_html_e( 'Discussion', 'wpc-coupon-listing' ); ?></a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
+                <h2></h2>
 				<?php if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ) { ?>
                     <div class="notice notice-success is-dismissible">
                         <p><?php esc_html_e( 'Settings updated.', 'wpc-coupon-listing' ); ?></p>
@@ -75,10 +85,12 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
 				<?php } ?>
                 <div class="wpclever_settings_page_nav">
                     <h2 class="nav-tab-wrapper">
-                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-wpccl&tab=settings' ) ); ?>" class="<?php echo esc_attr( $active_tab === 'settings' ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>">
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-wpccl&tab=settings' ) ); ?>"
+                           class="<?php echo esc_attr( $active_tab === 'settings' ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>">
 							<?php esc_html_e( 'Settings', 'wpc-coupon-listing' ); ?>
                         </a>
-                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-wpccl&tab=localization' ) ); ?>" class="<?php echo esc_attr( $active_tab === 'localization' ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>">
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-wpccl&tab=localization' ) ); ?>"
+                           class="<?php echo esc_attr( $active_tab === 'localization' ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>">
 							<?php esc_html_e( 'Localization', 'wpc-coupon-listing' ); ?>
                         </a>
                         <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-kit' ) ); ?>" class="nav-tab">
@@ -107,29 +119,35 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
                                 <tr>
                                     <th scope="row"><?php esc_html_e( 'Listing', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <select name="wpccl_settings[listing]">
-                                            <option value="publish" <?php selected( $listing, 'publish' ); ?>><?php esc_html_e( 'All published coupons', 'wpc-coupon-listing' ); ?></option>
-                                            <option value="public" <?php selected( $listing, 'public' ); ?>><?php esc_html_e( 'Public coupons only', 'wpc-coupon-listing' ); ?></option>
-                                        </select>
+                                        <label>
+                                            <select name="wpccl_settings[listing]">
+                                                <option value="publish" <?php selected( $listing, 'publish' ); ?>><?php esc_html_e( 'All published coupons', 'wpc-coupon-listing' ); ?></option>
+                                                <option value="public" <?php selected( $listing, 'public' ); ?>><?php esc_html_e( 'Public coupons only', 'wpc-coupon-listing' ); ?></option>
+                                            </select>
+                                        </label>
                                         <span class="description"><?php esc_html_e( 'You can set a coupon is public when editing a coupon.', 'wpc-coupon-listing' ); ?></span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><?php esc_html_e( 'Order by', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <select name="wpccl_settings[orderby]">
-                                            <option value="date" <?php selected( $orderby, 'date' ); ?>><?php esc_html_e( 'Date', 'wpc-coupon-listing' ); ?></option>
-                                            <option value="name" <?php selected( $orderby, 'name' ); ?>><?php esc_html_e( 'Name', 'wpc-coupon-listing' ); ?></option>
-                                        </select>
+                                        <label>
+                                            <select name="wpccl_settings[orderby]">
+                                                <option value="date" <?php selected( $orderby, 'date' ); ?>><?php esc_html_e( 'Date', 'wpc-coupon-listing' ); ?></option>
+                                                <option value="name" <?php selected( $orderby, 'name' ); ?>><?php esc_html_e( 'Name', 'wpc-coupon-listing' ); ?></option>
+                                            </select>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><?php esc_html_e( 'Order', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <select name="wpccl_settings[order]">
-                                            <option value="ASC" <?php selected( $order, 'ASC' ); ?>><?php esc_html_e( 'Ascending', 'wpc-coupon-listing' ); ?></option>
-                                            <option value="DESC" <?php selected( $order, 'DESC' ); ?>><?php esc_html_e( 'Descending', 'wpc-coupon-listing' ); ?></option>
-                                        </select>
+                                        <label>
+                                            <select name="wpccl_settings[order]">
+                                                <option value="ASC" <?php selected( $order, 'ASC' ); ?>><?php esc_html_e( 'Ascending', 'wpc-coupon-listing' ); ?></option>
+                                                <option value="DESC" <?php selected( $order, 'DESC' ); ?>><?php esc_html_e( 'Descending', 'wpc-coupon-listing' ); ?></option>
+                                            </select>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr class="heading">
@@ -140,46 +158,56 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
                                 <tr>
                                     <th scope="row"><?php esc_html_e( 'Discount value', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <select name="wpccl_settings[value]">
-                                            <option value="show" <?php selected( $value, 'show' ); ?>><?php esc_html_e( 'Show', 'wpc-coupon-listing' ); ?></option>
-                                            <option value="hide" <?php selected( $value, 'hide' ); ?>><?php esc_html_e( 'Hide', 'wpc-coupon-listing' ); ?></option>
-                                        </select>
+                                        <label>
+                                            <select name="wpccl_settings[value]">
+                                                <option value="show" <?php selected( $value, 'show' ); ?>><?php esc_html_e( 'Show', 'wpc-coupon-listing' ); ?></option>
+                                                <option value="hide" <?php selected( $value, 'hide' ); ?>><?php esc_html_e( 'Hide', 'wpc-coupon-listing' ); ?></option>
+                                            </select>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><?php esc_html_e( 'Expiry date', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <select name="wpccl_settings[expiry]">
-                                            <option value="show" <?php selected( $expiry, 'show' ); ?>><?php esc_html_e( 'Show', 'wpc-coupon-listing' ); ?></option>
-                                            <option value="hide" <?php selected( $expiry, 'hide' ); ?>><?php esc_html_e( 'Hide', 'wpc-coupon-listing' ); ?></option>
-                                        </select>
+                                        <label>
+                                            <select name="wpccl_settings[expiry]">
+                                                <option value="show" <?php selected( $expiry, 'show' ); ?>><?php esc_html_e( 'Show', 'wpc-coupon-listing' ); ?></option>
+                                                <option value="hide" <?php selected( $expiry, 'hide' ); ?>><?php esc_html_e( 'Hide', 'wpc-coupon-listing' ); ?></option>
+                                            </select>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><?php esc_html_e( 'Countdown for expiry date', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <select name="wpccl_settings[countdown]">
-                                            <option value="yes" <?php selected( $countdown, 'yes' ); ?>><?php esc_html_e( 'Yes', 'wpc-coupon-listing' ); ?></option>
-                                            <option value="no" <?php selected( $countdown, 'no' ); ?>><?php esc_html_e( 'No', 'wpc-coupon-listing' ); ?></option>
-                                        </select>
+                                        <label>
+                                            <select name="wpccl_settings[countdown]">
+                                                <option value="yes" <?php selected( $countdown, 'yes' ); ?>><?php esc_html_e( 'Yes', 'wpc-coupon-listing' ); ?></option>
+                                                <option value="no" <?php selected( $countdown, 'no' ); ?>><?php esc_html_e( 'No', 'wpc-coupon-listing' ); ?></option>
+                                            </select>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><?php esc_html_e( 'Description', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <select name="wpccl_settings[desc]">
-                                            <option value="show" <?php selected( $desc, 'show' ); ?>><?php esc_html_e( 'Show', 'wpc-coupon-listing' ); ?></option>
-                                            <option value="hide" <?php selected( $desc, 'hide' ); ?>><?php esc_html_e( 'Hide', 'wpc-coupon-listing' ); ?></option>
-                                        </select>
+                                        <label>
+                                            <select name="wpccl_settings[desc]">
+                                                <option value="show" <?php selected( $desc, 'show' ); ?>><?php esc_html_e( 'Show', 'wpc-coupon-listing' ); ?></option>
+                                                <option value="hide" <?php selected( $desc, 'hide' ); ?>><?php esc_html_e( 'Hide', 'wpc-coupon-listing' ); ?></option>
+                                            </select>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><?php esc_html_e( 'Message', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <select name="wpccl_settings[message]">
-                                            <option value="show" <?php selected( $message, 'show' ); ?>><?php esc_html_e( 'Show', 'wpc-coupon-listing' ); ?></option>
-                                            <option value="hide" <?php selected( $message, 'hide' ); ?>><?php esc_html_e( 'Hide', 'wpc-coupon-listing' ); ?></option>
-                                        </select>
+                                        <label>
+                                            <select name="wpccl_settings[message]">
+                                                <option value="show" <?php selected( $message, 'show' ); ?>><?php esc_html_e( 'Show', 'wpc-coupon-listing' ); ?></option>
+                                                <option value="hide" <?php selected( $message, 'hide' ); ?>><?php esc_html_e( 'Hide', 'wpc-coupon-listing' ); ?></option>
+                                            </select>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr class="submit">
@@ -201,97 +229,163 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
                                 <tr>
                                     <th><?php esc_html_e( 'Button text', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[button]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'button' ) ); ?>" placeholder="<?php esc_attr_e( 'View Available Coupons', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text" name="wpccl_localization[button]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'button' ) ); ?>"
+                                                   placeholder="<?php esc_attr_e( 'View Available Coupons', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Heading', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[heading]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'heading' ) ); ?>" placeholder="<?php esc_attr_e( 'Select an available coupon below', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text" name="wpccl_localization[heading]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'heading' ) ); ?>"
+                                                   placeholder="<?php esc_attr_e( 'Select an available coupon below', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Applied', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[applied]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'applied' ) ); ?>" placeholder="<?php esc_attr_e( 'Applied', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text" name="wpccl_localization[applied]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'applied' ) ); ?>"
+                                                   placeholder="<?php esc_attr_e( 'Applied', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Individual use only', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[individual]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'individual' ) ); ?>" placeholder="<?php esc_attr_e( 'Individual use only', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text"
+                                                   name="wpccl_localization[individual]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'individual' ) ); ?>"
+                                                   placeholder="<?php esc_attr_e( 'Individual use only', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Discount value', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[discount]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'discount' ) ); ?>" placeholder="<?php /* translators: value */
-										esc_attr_e( '%s Discount', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text" name="wpccl_localization[discount]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'discount' ) ); ?>"
+                                                   placeholder="<?php /* translators: value */
+											       esc_attr_e( '%s Discount', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Product discount value', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[product_discount]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'product_discount' ) ); ?>" placeholder="<?php /* translators: value */
-										esc_attr_e( '%s Product Discount', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text"
+                                                   name="wpccl_localization[product_discount]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'product_discount' ) ); ?>"
+                                                   placeholder="<?php /* translators: value */
+											       esc_attr_e( '%s Product Discount', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Free shipping', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[free_shipping]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'free_shipping' ) ); ?>" placeholder="<?php esc_attr_e( 'Free Shipping', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text"
+                                                   name="wpccl_localization[free_shipping]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'free_shipping' ) ); ?>"
+                                                   placeholder="<?php esc_attr_e( 'Free Shipping', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Expires on', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[expires]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'expires' ) ); ?>" placeholder="<?php /* translators: date */
-										esc_attr_e( 'Expires on: %s', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text" name="wpccl_localization[expires]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'expires' ) ); ?>"
+                                                   placeholder="<?php /* translators: date */
+											       esc_attr_e( 'Expires on: %s', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Never expire', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[never_expire]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'never_expire' ) ); ?>" placeholder="<?php esc_attr_e( 'Never expire', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text"
+                                                   name="wpccl_localization[never_expire]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'never_expire' ) ); ?>"
+                                                   placeholder="<?php esc_attr_e( 'Never expire', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Active in', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[active_in]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'active_in' ) ); ?>" placeholder="<?php /* translators: time */
-										esc_attr_e( 'Active in %s', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text" name="wpccl_localization[active_in]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'active_in' ) ); ?>"
+                                                   placeholder="<?php /* translators: time */
+											       esc_attr_e( 'Active in %s', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Day', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[day]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'day' ) ); ?>" placeholder="<?php esc_attr_e( 'Day', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text" name="wpccl_localization[day]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'day' ) ); ?>"
+                                                   placeholder="<?php esc_attr_e( 'Day', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Days', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[days]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'days' ) ); ?>" placeholder="<?php esc_attr_e( 'Days', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text" name="wpccl_localization[days]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'days' ) ); ?>"
+                                                   placeholder="<?php esc_attr_e( 'Days', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Minimum spend', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[minimum_spend]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'minimum_spend' ) ); ?>" placeholder="<?php /* translators: minimum */
-										esc_attr_e( 'The minimum spend for this coupon is %s.', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text"
+                                                   name="wpccl_localization[minimum_spend]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'minimum_spend' ) ); ?>"
+                                                   placeholder="<?php /* translators: minimum */
+											       esc_attr_e( 'The minimum spend for this coupon is %s.', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Maximum spend', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[maximum_spend]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'maximum_spend' ) ); ?>" placeholder="<?php /* translators: maximum */
-										esc_attr_e( 'The maximum spend for this coupon is %s.', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text"
+                                                   name="wpccl_localization[maximum_spend]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'maximum_spend' ) ); ?>"
+                                                   placeholder="<?php /* translators: maximum */
+											       esc_attr_e( 'The maximum spend for this coupon is %s.', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th><?php esc_html_e( 'Empty', 'wpc-coupon-listing' ); ?></th>
                                     <td>
-                                        <input type="text" class="regular-text" name="wpccl_localization[empty]" value="<?php echo esc_attr( Wpccl_Helper::localization( 'empty' ) ); ?>" placeholder="<?php esc_attr_e( 'Have no coupons here!', 'wpc-coupon-listing' ); ?>"/>
+                                        <label>
+                                            <input type="text" class="regular-text" name="wpccl_localization[empty]"
+                                                   value="<?php echo esc_attr( Wpccl_Helper::localization( 'empty' ) ); ?>"
+                                                   placeholder="<?php esc_attr_e( 'Have no coupons here!', 'wpc-coupon-listing' ); ?>"/>
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr class="submit">
@@ -310,12 +404,15 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
                     <div class="wpclever_settings_page_suggestion_content">
                         <div>
                             To display custom engaging real-time messages on any wished positions, please install
-                            <a href="https://wordpress.org/plugins/wpc-smart-messages/" target="_blank">WPC Smart Messages</a> plugin. It's free!
+                            <a href="https://wordpress.org/plugins/wpc-smart-messages/" target="_blank">WPC Smart
+                                Messages</a> plugin. It's free!
                         </div>
                         <div>
                             Wanna save your precious time working on variations? Try our brand-new free plugin
-                            <a href="https://wordpress.org/plugins/wpc-variation-bulk-editor/" target="_blank">WPC Variation Bulk Editor</a> and
-                            <a href="https://wordpress.org/plugins/wpc-variation-duplicator/" target="_blank">WPC Variation Duplicator</a>.
+                            <a href="https://wordpress.org/plugins/wpc-variation-bulk-editor/" target="_blank">WPC
+                                Variation Bulk Editor</a> and
+                            <a href="https://wordpress.org/plugins/wpc-variation-duplicator/" target="_blank">WPC
+                                Variation Duplicator</a>.
                         </div>
                     </div>
                 </div>

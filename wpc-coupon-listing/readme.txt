@@ -2,9 +2,9 @@
 Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, coupon listing, coupon
-Tested up to: 6.7
-Version: 1.3.3
-Stable tag: 1.3.3
+Tested up to: 6.8
+Version: 1.3.4
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,10 @@ Please try other plugins from us:
 4. Now when purchasing, the buyer can choose a coupon from the list
 
 == Changelog ==
+
+= 1.3.4 =
+* Fixed: Minor CSS/JS issues in the backend
+* Updated: Compatible with WP 6.8 & Woo 9.9
 
 = 1.3.3 =
 * Fixed: Error with the match function on PHP7
