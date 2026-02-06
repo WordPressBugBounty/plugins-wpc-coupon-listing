@@ -36,6 +36,18 @@ if ( ! class_exists( 'Wpccl_Helper' ) ) {
 
 			return esc_html( apply_filters( 'wpccl_localization_' . $key, $str ) );
 		}
+
+		public static function sanitize_array( $arr ) {
+			foreach ( (array) $arr as $k => $v ) {
+				if ( is_array( $v ) ) {
+					$arr[ $k ] = self::sanitize_array( $v );
+				} else {
+					$arr[ $k ] = sanitize_post_field( 'post_content', $v, 0, 'db' );
+				}
+			}
+
+			return $arr;
+		}
 	}
 }
 
