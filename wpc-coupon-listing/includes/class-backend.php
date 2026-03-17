@@ -17,6 +17,7 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
             add_action( 'init', [ $this, 'init' ] );
             add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
             add_action( 'admin_init', [ $this, 'register_settings' ] );
+            add_filter( 'pre_update_option', [ $this, 'last_saved' ], 10, 2 );
             add_action( 'admin_menu', [ $this, 'admin_menu' ] );
             add_filter( 'woocommerce_coupon_data_tabs', [ $this, 'coupon_tab' ] );
             add_action( 'woocommerce_coupon_data_panels', [ $this, 'coupon_tab_panel' ] );
@@ -51,6 +52,15 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
                     'type'              => 'array',
                     'sanitize_callback' => [ 'Wpccl_Helper', 'sanitize_array' ],
             ] );
+        }
+
+        function last_saved( $value, $option ) {
+            if ( $option == 'wpccl_settings' || $option == 'wpccl_localization' ) {
+                $value['_last_saved']    = current_time( 'timestamp' );
+                $value['_last_saved_by'] = get_current_user_id();
+            }
+
+            return $value;
         }
 
         function admin_menu() {
@@ -218,7 +228,16 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
                                 </tr>
                                 <tr class="submit">
                                     <th colspan="2">
-                                        <?php settings_fields( 'wpccl_settings' ); ?><?php submit_button(); ?>
+                                        <div class="wpclever_submit">
+                                            <?php
+                                            settings_fields( 'wpccl_settings' );
+                                            submit_button( '', 'primary', 'submit', false );
+
+                                            if ( function_exists( 'wpc_last_saved' ) ) {
+                                                wpc_last_saved( Wpccl_Helper::get_settings() );
+                                            }
+                                            ?>
+                                        </div>
                                         <a style="display: none;" class="wpclever_export"
                                            data-key="wpccl_settings"
                                            data-name="settings"
@@ -400,7 +419,16 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
                                 </tr>
                                 <tr class="submit">
                                     <th colspan="2">
-                                        <?php settings_fields( 'wpccl_localization' ); ?><?php submit_button(); ?>
+                                        <div class="wpclever_submit">
+                                            <?php
+                                            settings_fields( 'wpccl_localization' );
+                                            submit_button( '', 'primary', 'submit', false );
+
+                                            if ( function_exists( 'wpc_last_saved' ) ) {
+                                                wpc_last_saved( get_option( 'wpccl_localization', [] ) );
+                                            }
+                                            ?>
+                                        </div>
                                         <a style="display: none;" class="wpclever_export"
                                            data-key="wpccl_localization"
                                            data-name="settings"
