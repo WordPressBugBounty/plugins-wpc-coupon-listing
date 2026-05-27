@@ -71,6 +71,7 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
         }
 
         function admin_menu_content() {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
             $active_tab = sanitize_key( $_GET['tab'] ?? 'settings' );
             ?>
             <div class="wpclever_settings_page wrap">
@@ -78,7 +79,7 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
                     <a class="wpclever_settings_page_header_logo" href="https://wpclever.net/"
                        target="_blank" title="Visit wpclever.net"></a>
                     <div class="wpclever_settings_page_header_text">
-                        <div class="wpclever_settings_page_title"><?php echo esc_html__( 'WPC Coupon Listing', 'wpc-coupon-listing' ) . ' ' . WPCCL_VERSION; ?></div>
+                        <div class="wpclever_settings_page_title"><?php echo esc_html__( 'WPC Coupon Listing', 'wpc-coupon-listing' ) . ' ' . esc_html( WPCCL_VERSION ); ?></div>
                         <div class="wpclever_settings_page_desc about-text">
                             <p>
                                 <?php printf( /* translators: stars */ esc_html__( 'Thank you for using our plugin! If you are satisfied, please reward it a full five-star %s rating.', 'wpc-coupon-listing' ), '<span style="color:#ffb900">&#9733;&#9733;&#9733;&#9733;&#9733;</span>' ); ?>
@@ -94,7 +95,8 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
                     </div>
                 </div>
                 <h2></h2>
-                <?php if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ) { ?>
+                <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                if ( isset( $_GET['settings-updated'] ) && sanitize_text_field( wp_unslash( $_GET['settings-updated'] ) ) ) { ?>
                     <div class="notice notice-success is-dismissible">
                         <p><?php esc_html_e( 'Settings updated.', 'wpc-coupon-listing' ); ?></p>
                     </div>
@@ -463,13 +465,14 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
         }
 
         public function save_coupon_settings( $post_id ) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified by WooCommerce before this hook
             $public = isset( $_POST['wpccl_public'] );
             update_post_meta( $post_id, 'wpccl_public', $public );
         }
 
         public function coupon_tab( $tabs ) {
             $tabs['wpccl'] = [
-                    'label'  => esc_html__( 'WPC Coupon Listing', 'woocommerce' ),
+                    'label'  => esc_html__( 'WPC Coupon Listing', 'wpc-coupon-listing' ),
                     'target' => 'wpccl_coupon_listing',
                     'class'  => '',
             ];

@@ -31,9 +31,10 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
         public function enqueue_scripts() {
             // countdown
             if ( Wpccl_Helper::get_setting( 'countdown', 'no' ) === 'yes' ) {
-                // moment
-                wp_enqueue_script( 'moment', WPCCL_URI . 'assets/libs/moment/moment.js', [ 'jquery' ], WPCCL_VERSION, true );
-                wp_enqueue_script( 'moment-timezone', WPCCL_URI . 'assets/libs/moment-timezone/moment-timezone-with-data.js', [ 'jquery' ], WPCCL_VERSION, true );
+                // moment (use WordPress core bundled version)
+                wp_enqueue_script( 'moment' );
+                // moment-timezone (not included in WordPress core, use bundled version)
+                wp_enqueue_script( 'moment-timezone-with-data', WPCCL_URI . 'assets/libs/moment-timezone/moment-timezone-with-data.js', [ 'moment' ], WPCCL_VERSION, true );
 
                 // jquery.countdown
                 if ( apply_filters( 'wpccl_zero_is_plural', true ) ) {
@@ -44,11 +45,11 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
             }
 
             // featherlight
-            wp_enqueue_style( 'featherlight', WPCCL_URI . 'assets/libs/featherlight/featherlight.css' );
+            wp_enqueue_style( 'featherlight', WPCCL_URI . 'assets/libs/featherlight/featherlight.css', [], WPCCL_VERSION );
             wp_enqueue_script( 'featherlight', WPCCL_URI . 'assets/libs/featherlight/featherlight.js', [ 'jquery' ], WPCCL_VERSION, true );
 
             // frontend
-            wp_enqueue_style( 'wpccl-frontend', WPCCL_URI . 'assets/css/frontend.css' );
+            wp_enqueue_style( 'wpccl-frontend', WPCCL_URI . 'assets/css/frontend.css', [], WPCCL_VERSION );
             wp_enqueue_script( 'wpccl-frontend', WPCCL_URI . 'assets/js/frontend.js', [ 'jquery' ], WPCCL_VERSION, true );
             wp_localize_script( 'wpccl-frontend', 'wpccl_vars', [
                     'wc_ajax_url' => WC_AJAX::get_endpoint( '%%endpoint%%' ),
@@ -102,7 +103,7 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
                 die( 'Permissions check failed!' );
             }
 
-            echo self::render_coupons();
+            echo wp_kses_post( self::render_coupons() );
             wp_die();
         }
 
@@ -112,7 +113,7 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
             }
 
             if ( isset( $_POST['coupon_code'] ) ) {
-                if ( WC()->cart->apply_coupon( sanitize_text_field( $_POST['coupon_code'] ) ) ) {
+                if ( WC()->cart->apply_coupon( sanitize_text_field( wp_unslash( $_POST['coupon_code'] ) ) ) ) {
                     echo 'true';
                 } else {
                     echo 'false';
@@ -126,7 +127,7 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
             $coupons = self::get_coupons();
 
             if ( empty( $coupons ) ) {
-                return '<div class="wpccl-empty">' . Wpccl_Helper::localization( 'empty', esc_html__( 'Have no coupons here!', 'wpc-coupon-listing' ) ) . '</div>';
+                return '<div class="wpccl-empty">' . esc_html( Wpccl_Helper::localization( 'empty', esc_html__( 'Have no coupons here!', 'wpc-coupon-listing' ) ) ) . '</div>';
             }
 
             if ( ! empty( $hide ) ) {
@@ -179,15 +180,15 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
                     <div class="wpccl-coupon-info">
                         <?php
                         if ( ( Wpccl_Helper::get_setting( 'value', 'show' ) === 'show' ) && ! in_array( 'value', $hide_arr ) ) {
-                            echo '<div class="wpccl-coupon-value">' . apply_filters( 'wpccl_coupon_value', esc_html( wp_strip_all_tags( $amount ) ), $coupon, $coupon_data ) . '</div>';
+                            echo '<div class="wpccl-coupon-value">' . wp_kses_post( apply_filters( 'wpccl_coupon_value', esc_html( wp_strip_all_tags( $amount ) ), $coupon, $coupon_data ) ) . '</div>';
                         }
                         ?>
                         <div class="wpccl-coupon-code-wrap">
-                            <div class="wpccl-coupon-code"><?php echo apply_filters( 'wpccl_coupon_code', esc_html( $coupon->get_code() ), $coupon, $coupon_data ); ?></div>
+                            <div class="wpccl-coupon-code"><?php echo wp_kses_post( apply_filters( 'wpccl_coupon_code', esc_html( $coupon->get_code() ), $coupon, $coupon_data ) ); ?></div>
                             <div class="wpccl-coupon-more">
                                 <?php
                                 if ( $individual && ! in_array( 'individual', $hide_arr ) ) {
-                                    echo '<span class="wpccl-coupon-individual">' . Wpccl_Helper::localization( 'individual', esc_html__( 'Individual use only', 'wpc-coupon-listing' ) ) . '</span><br/>';
+                                    echo '<span class="wpccl-coupon-individual">' . esc_html( Wpccl_Helper::localization( 'individual', esc_html__( 'Individual use only', 'wpc-coupon-listing' ) ) ) . '</span><br/>';
                                 }
 
                                 if ( ( Wpccl_Helper::get_setting( 'expiry', 'show' ) === 'show' ) && ! in_array( 'expiry', $hide_arr ) && ! in_array( 'expire', $hide_arr ) ) {
@@ -198,17 +199,17 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
                         </div>
                         <?php
                         if ( ( Wpccl_Helper::get_setting( 'desc', 'show' ) === 'show' ) && ! in_array( 'desc', $hide_arr ) && ! in_array( 'description', $hide_arr ) ) {
-                            echo '<div class="wpccl-coupon-desc">' . apply_filters( 'wpccl_coupon_description', $coupon->get_description(), $coupon, $coupon_data ) . '</div>';
+                            echo '<div class="wpccl-coupon-desc">' . wp_kses_post( apply_filters( 'wpccl_coupon_description', $coupon->get_description(), $coupon, $coupon_data ) ) . '</div>';
                         }
                         ?>
                     </div>
                     <?php
                     if ( ( Wpccl_Helper::get_setting( 'message', 'show' ) === 'show' ) && ! empty( $coupon_data['message'] ) && ! in_array( 'mess', $hide_arr ) && ! in_array( 'message', $hide_arr ) ) {
-                        echo '<div class="wpccl-coupon-message">' . apply_filters( 'wpccl_coupon_message', $coupon_data['message'], $coupon, $coupon_data ) . '</div>';
+                        echo '<div class="wpccl-coupon-message">' . wp_kses_post( apply_filters( 'wpccl_coupon_message', $coupon_data['message'], $coupon, $coupon_data ) ) . '</div>';
                     }
 
                     if ( ! empty( $coupon_data['active'] ) && ! in_array( 'active', $hide_arr ) && ! in_array( 'applied', $hide_arr ) ) {
-                        echo '<div class="wpccl-coupon-applied-txt">' . Wpccl_Helper::localization( 'applied', esc_html__( 'Applied', 'wpc-coupon-listing' ) ) . '</div>';
+                        echo '<div class="wpccl-coupon-applied-txt">' . esc_html( Wpccl_Helper::localization( 'applied', esc_html__( 'Applied', 'wpc-coupon-listing' ) ) ) . '</div>';
                     }
                     ?>
                 </div>
@@ -220,7 +221,7 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
         public function display_popup() {
             ?>
             <div id="wpccl-popup" class="wpccl-popup wpccl-lightbox">
-                <div class="wpccl-heading"><?php echo Wpccl_Helper::localization( 'heading', esc_html__( 'Select an available coupon below', 'wpc-coupon-listing' ) ); ?></div>
+                <div class="wpccl-heading"><?php echo esc_html( Wpccl_Helper::localization( 'heading', esc_html__( 'Select an available coupon below', 'wpc-coupon-listing' ) ) ); ?></div>
                 <div class="wpccl-coupons"></div>
             </div>
             <?php
@@ -262,7 +263,8 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
 
             if ( ! empty( $coupon_ids ) ) {
                 $current_user  = wp_get_current_user();
-                $billing_email = isset( $_POST['billing_email'] ) ? sanitize_email( $_POST['billing_email'] ) : '';
+                // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified in ajax_load_coupons()
+                $billing_email = isset( $_POST['billing_email'] ) ? sanitize_email( wp_unslash( $_POST['billing_email'] ) ) : '';
                 $check_emails  = array_unique(
                         array_filter(
                                 array_map(
