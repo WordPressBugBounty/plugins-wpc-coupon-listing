@@ -14,7 +14,6 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
         }
 
         public function __construct() {
-            add_action( 'init', [ $this, 'init' ] );
             add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
             add_action( 'admin_init', [ $this, 'register_settings' ] );
             add_filter( 'pre_update_option', [ $this, 'last_saved' ], 10, 2 );
@@ -30,11 +29,6 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
             // compatibility
             add_filter( 'woocommerce_coupon_generator_coupon_meta_data', [ $this, 'set_coupon_public' ], 99, 3 );
         }
-
-        public function init() {
-            load_plugin_textdomain( 'wpc-coupon-listing', false, basename( WPCCL_DIR ) . '/languages/' );
-        }
-
         public function enqueue_scripts() {
             wp_enqueue_style( 'wpccl-backend', WPCCL_URI . 'assets/css/backend.css', [ 'woocommerce_admin_styles' ], WPCCL_VERSION );
             wp_enqueue_script( 'wpccl-backend', WPCCL_URI . 'assets/js/backend.js', [ 'jquery' ], WPCCL_VERSION, true );
@@ -72,7 +66,7 @@ if ( ! class_exists( 'Wpccl_Backend' ) ) {
 
         function admin_menu_content() {
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-            $active_tab = sanitize_key( $_GET['tab'] ?? 'settings' );
+            $active_tab = sanitize_key( wp_unslash( $_GET['tab'] ?? 'settings' ) );
             ?>
             <div class="wpclever_settings_page wrap">
                 <div class="wpclever_settings_page_header">

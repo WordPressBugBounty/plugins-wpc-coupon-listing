@@ -99,7 +99,7 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
         }
 
         public function ajax_load_coupons() {
-            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'wpccl-security' ) ) {
+            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'wpccl-security' ) ) {
                 die( 'Permissions check failed!' );
             }
 
@@ -108,12 +108,12 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
         }
 
         public function ajax_apply_coupon() {
-            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'wpccl-security' ) ) {
+            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'wpccl-security' ) ) {
                 die( 'Permissions check failed!' );
             }
 
             if ( isset( $_POST['coupon_code'] ) ) {
-                if ( WC()->cart->apply_coupon( sanitize_text_field( wp_unslash( $_POST['coupon_code'] ) ) ) ) {
+                if ( WC()->cart->apply_coupon( sanitize_text_field( wp_unslash( $_POST['coupon_code'] ?? '' ) ) ) ) {
                     echo 'true';
                 } else {
                     echo 'false';
@@ -264,7 +264,7 @@ if ( ! class_exists( 'Wpccl_Frontend' ) ) {
             if ( ! empty( $coupon_ids ) ) {
                 $current_user  = wp_get_current_user();
                 // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified in ajax_load_coupons()
-                $billing_email = isset( $_POST['billing_email'] ) ? sanitize_email( wp_unslash( $_POST['billing_email'] ) ) : '';
+                $billing_email = isset( $_POST['billing_email'] ) ? sanitize_email( wp_unslash( $_POST['billing_email'] ?? '' ) ) : '';
                 $check_emails  = array_unique(
                         array_filter(
                                 array_map(
